@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auction</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f7f9;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 80px 20px;
+}
+
+/* CARD */
+.card {
+  width: 300px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: 0.3s;
+}
+.card:hover { transform: translateY(-5px); }
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card-content { padding: 20px; }
+
+.name {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #0d3b66;
+}
+
+.countdown {
+  color: #007f5f;
+  margin: 10px 0;
+}
+
+.bid-info {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.bid-info span {
+  font-weight: bold;
+  color: #0d3b66;
+}
+
+button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg,#00b4d8,#007f5f);
+  color: white;
+  cursor: pointer;
+}
+
+/* ADD BUTTON */
+#addBtn {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  font-size: 30px;
+  border-radius: 50%;
+  border: none;
+  background: #00b4d8;
+  color: white;
+  cursor: pointer;
+}
+
+/* POPUP */
+.popup {
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  width: 300px;
+  text-align: center;
+}
+
+.popup-content input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+</style>
+
+</head>
+<body>
+
+<!-- + BUTTON -->
+<button id="addBtn">+</button>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <h3>Add Item</h3>
+
+    <form action="/add_item" method="POST" enctype="multipart/form-data">
+      <input type="text" name="name" placeholder="Item name" required>
+      <input type="file" name="image" accept="image/*">
+      <input type="number" name="start_bid" placeholder="Starting bid" required>
+      <input type="number" name="close_bid" placeholder="Closing bid" required>
+      <button type="submit">Add</button>
+    </form>
+
+  </div>
+</div>
+
+<!-- CARDS -->
+{% for item in items %}
+<div class="card">
+  <img src="{{ item.image }}" onerror="this.src='static/default.png'">
+  <div class="card-content">
+    <div class="name">{{ item.name }}</div>
+    <div class="countdown">05:00</div>
+    <div class="bid-info">
+      <div>Start: <span>${{ item.start_bid }}</span></div>
+      <div>Close: <span>${{ item.close_bid }}</span></div>
+    </div>
+    <button>Place Bid</button>
+  </div>
+</div>
+{% endfor %}
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const addBtn = document.getElementById("addBtn");
+  const popup = document.getElementById("popup");
+
+  addBtn.addEventListener("click", () => {
+    popup.style.display = "flex";
+  });
+
+  popup.addEventListener("click", (e) => {
+    if (e.target === popup) {
+      popup.style.display = "none";
+    }
+  });
+
+});
+</script>
+
+</body>
+</html>
